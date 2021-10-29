@@ -24,7 +24,7 @@ typedef std::function<void(uint8_t *data, size_t len)> RecvMsgHandler;
 // Uncomment to enable webserial debug mode
 // #define WEBSERIAL_DEBUG 1
 
-class WebSerialClass{
+class WebSerialClass: public Print {
 
 public:
     void begin(AsyncWebServer *server, const char* url = "/webserial");
@@ -72,11 +72,12 @@ public:
 
     void println(double m);
 
-
+    size_t write(uint8_t m);
 private:
     AsyncWebServer *_server;
     AsyncWebSocket *_ws;
     RecvMsgHandler _RecvFunc = NULL;
+    String writeBuffer = "";
     
     #if defined(WEBSERIAL_DEBUG)
         void DEBUG_WEB_SERIAL(const char* message);

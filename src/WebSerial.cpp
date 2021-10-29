@@ -118,6 +118,16 @@ void WebSerialClass::println(double m){
     _ws->textAll(String(m)+"\n");
 }
 
+size_t WebSerialClass::write(uint8_t m){
+    writeBuffer = writeBuffer + String((char) m);
+    if (writeBuffer.indexOf('\n') >= 0)
+    {
+        _ws->textAll(writeBuffer);
+        writeBuffer = "";
+    }
+    return sizeof(m);
+}
+
 #if defined(WEBSERIAL_DEBUG)
     void WebSerialClass::DEBUG_WEB_SERIAL(const char* message){
         Serial.println("[WebSerial] "+message);
