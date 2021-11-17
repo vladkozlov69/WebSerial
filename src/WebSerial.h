@@ -19,7 +19,10 @@
 
 #include "webserial_webpage.h"
 
+class WebSerialClass;
+
 typedef std::function<void(uint8_t *data, size_t len)> RecvMsgHandler;
+typedef std::function<void(WebSerialClass * webSerial)> ConnectCallbackHandler;
 
 // Uncomment to enable webserial debug mode
 // #define WEBSERIAL_DEBUG 1
@@ -30,6 +33,7 @@ public:
     void begin(AsyncWebServer *server, const char* url = "/webserial");
 
     void msgCallback(RecvMsgHandler _recv);
+    void connectCallback(ConnectCallbackHandler _conn);
 
     // Print
 
@@ -77,6 +81,7 @@ private:
     AsyncWebServer *_server;
     AsyncWebSocket *_ws;
     RecvMsgHandler _RecvFunc = NULL;
+    ConnectCallbackHandler _CallbackFunc = NULL;
     String writeBuffer = "";
     
     #if defined(WEBSERIAL_DEBUG)

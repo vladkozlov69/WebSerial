@@ -5,7 +5,11 @@ void WebSerialClass::begin(AsyncWebServer *server, const char* url){
     _server = server;
     _ws = new AsyncWebSocket("/webserialws");
 
-    _server->on(url, HTTP_GET, [](AsyncWebServerRequest *request){
+    _server->on(url, HTTP_GET, [this](AsyncWebServerRequest *request){
+        if (this->_CallbackFunc)
+        {
+            this->_CallbackFunc(this);
+        }
         // Send Webpage
         AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", WEBSERIAL_HTML, WEBSERIAL_HTML_SIZE);
         response->addHeader("Content-Encoding","gzip");
@@ -40,6 +44,10 @@ void WebSerialClass::begin(AsyncWebServer *server, const char* url){
 
 void WebSerialClass::msgCallback(RecvMsgHandler _recv){
     _RecvFunc = _recv;
+}
+
+void WebSerialClass::connectCallback(ConnectCallbackHandler _conn){
+    _CallbackFunc = _conn;
 }
 
 // Print
