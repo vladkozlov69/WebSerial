@@ -61,6 +61,9 @@ void WebSerialClass::begin(AsyncWebServer *server, const char* url) {
       if(!request->authenticate(_username.c_str(), _password.c_str()))
         return request->requestAuthentication();
     }
+    if (this->_CallbackFunc) {
+      this->_CallbackFunc(this);
+    }
     AsyncWebServerResponse *response = request->beginResponse(200, "text/html", WEBSERIAL_HTML, sizeof(WEBSERIAL_HTML));
     response->addHeader("Content-Encoding", "gzip");
     request->send(response);        
@@ -313,6 +316,10 @@ size_t WebSerialClass::_write_row_packet(uint8_t* dest, const uint8_t *payload, 
   memmove(dest + WSL_HEAD_LEN + WSL_MSG_SIZE_LEN, payload, payload_size);
   // Return total packet size
   return WSL_HEAD_LEN + WSL_MSG_SIZE_LEN + payload_size;
+}
+
+void WebSerialClass::connectCallback(ConnectCallbackHandler _conn) {
+  _CallbackFunc = _conn;
 }
 
 WebSerialClass WebSerial;

@@ -99,6 +99,10 @@ License: AGPL-3.0 (https://www.gnu.org/licenses/agpl-3.0.html)
 typedef std::function<void(uint8_t *data, size_t len)> WSLMessageHandler;
 typedef std::function<void(const String& msg)> WSLStringMessageHandler;
 
+class WebSerialClass;
+typedef std::function<void(WebSerialClass * webSerial)> ConnectCallbackHandler;
+
+
 class WebSerialClass : public Print {
   public:
     void begin(AsyncWebServer *server, const char* url = "/webserial");
@@ -106,6 +110,7 @@ class WebSerialClass : public Print {
     void setAuthentication(const String& username, const String& password);
     void onMessage(WSLMessageHandler recv);
     void onMessage(WSLStringMessageHandler recv);
+    void connectCallback(ConnectCallbackHandler _conn);
     bool getConnectionCount();
     size_t write(uint8_t) override;
     size_t write(const uint8_t* buffer, size_t size) override;
@@ -151,6 +156,7 @@ class WebSerialClass : public Print {
     AsyncWebSocket *_ws;
     WSLMessageHandler _recv = nullptr;
     WSLStringMessageHandler _recvString = nullptr;
+    ConnectCallbackHandler _CallbackFunc = nullptr;
     bool _authenticate = false;
     String _username;
     String _password;
